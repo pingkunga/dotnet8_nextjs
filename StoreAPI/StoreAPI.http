@@ -1,0 +1,56 @@
+@StoreAPI_HostAddress = http://localhost:5134/api
+
+GET {{StoreAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+### Test Connection
+GET {{StoreAPI_HostAddress}}/product/testConnection
+Accept: application/json
+
+
+### Get All Products
+GET {{StoreAPI_HostAddress}}/product
+Accept: application/json
+
+### Get Product By Id
+GET {{StoreAPI_HostAddress}}/product/1
+Accept: application/json
+
+### Add new product
+POST {{StoreAPI_HostAddress}}/product
+Content-Type: application/json
+Accept: application/json
+
+{
+  "category_id": 1,
+  "product_name": "Mobile Product New",
+  "unit_price": 10,
+  "product_picture": "https://www.popticles.com/wp-content/uploads/2021/04/iphone-410311_1280-1024x682.jpg",
+  "unit_in_stock": 100,
+  "created_date": "2021-07-01T00:00:00",
+  "modified_date": "2021-07-01T00:00:00"
+}
+
+
+### Update product
+PUT {{StoreAPI_HostAddress}}/product/16
+Content-Type: application/json
+Accept: application/json
+
+{
+  "product_id": 16,
+  "category_id": 1,
+  "product_name": "Mobile Product Updated",
+  "unit_price": 20,
+  "product_picture": "https://www.popticles.com/wp-content/uploads/2021/04/iphone-410311_1280-1024x682.jpg",
+  "unit_in_stock": 200,
+  "created_date": "2021-07-01T00:00:00",
+  "modified_date": "2021-07-01T00:00:00"
+}
+
+
+### Delete product
+DELETE {{StoreAPI_HostAddress}}/product/15
+Accept: application/json
+
+``` 
