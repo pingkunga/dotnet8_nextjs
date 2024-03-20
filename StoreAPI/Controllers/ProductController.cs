@@ -10,10 +10,12 @@ namespace StoreAPI.Controllers;
 public class ProductController: ControllerBase
 {
     private readonly ApplicationDbContext _context;
+    private readonly IWebHostEnvironment _env;
 
-    public ProductController(ApplicationDbContext context)
+    public ProductController(ApplicationDbContext context, IWebHostEnvironment env)
     {
         _context = context;
+        _env = env;
     }
 
     // GET: api/product/testConnection
@@ -51,9 +53,27 @@ public class ProductController: ControllerBase
 
     // POST: /api/Product   
     [HttpPost]
-    public async Task<ActionResult<product>> CreateProduct(product product)
+    public async Task<ActionResult<product>> CreateProduct([FromForm] product product, IFormFile image)
     {
         _context.products.Add(product);
+
+        if(image != null){
+            string fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
+
+            string uploadFolder = Path.Combine(_env.ContentRootPath, "uploads");
+
+            if (!Directory.Exists(uploadFolder))
+            {
+                Directory.CreateDirectory(uploadFolder);
+            }
+
+            using (var fileStream = new FileStream(Path.Combine(uploadFolder, fileName), FileMode.Create))
+            {
+                await image.CopyToAsync(fileStream);
+            }
+            product.product_picture = fileName;
+        }
+
         await _context.SaveChangesAsync();
 
         return Ok(product);
