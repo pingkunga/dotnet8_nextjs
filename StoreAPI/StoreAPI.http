@@ -1,6 +1,70 @@
 @StoreAPI_HostAddress = http://localhost:5134/api
 
-GET {{StoreAPI_HostAddress}}/weatherforecast/
+@AuthAPI_HostAddress = http://localhost:5134/api/Authenticate
+
+@access_token = {{auth_login.response.body.accessToken}}
+@refresh_token = {{auth_login.response.body.refreshToken}}
+
+
+### [Auth] Register
+POST {{AuthAPI_HostAddress}}/register
+Content-Type: application/json
+
+{
+  "username": "pingkunga1",
+  "email": "pingkunga@gmail.com",
+  "password": "As@1234",
+  "firstName": "Pingkung",
+  "lastName": "A"
+}
+
+### [Auth] Register Admin
+POST {{AuthAPI_HostAddress}}/register-admin
+Content-Type: application/json
+
+{
+  "username": "pingkungadm1",
+  "email": "pingkungadm@gmail.com",
+  "password": "Admin@1234",
+  "firstName": "Pingkung",
+  "lastName": "Admin"
+}
+
+### [Auth] Register Admin
+POST {{AuthAPI_HostAddress}}/register-admin
+Content-Type: application/json
+
+{
+  "username": "pingkungadmc",
+  "email": "pingkungadmc@gmail.com",
+  "password": "Admin@1234",
+  "firstName": "Pingkung",
+  "lastName": "Admin"
+}
+
+### [Auth] Login 
+# @name auth_login
+POST {{AuthAPI_HostAddress}}/login
+Content-Type: application/json
+
+{
+  "username": "pingkunga1",
+  "password": "As@1234"
+}
+
+### [Auth] Login Admin
+POST {{AuthAPI_HostAddress}}/login
+Content-Type: application/json
+
+{
+  "username": "pingkungadmc",
+  "password": "Admin@1234"
+}
+
+
+
+### Weather
+GET {{StoreAPI_HostAddress}}/weatherforecast
 Accept: application/json
 
 ### Test Connection
@@ -10,10 +74,12 @@ Accept: application/json
 
 ### Get All Products
 GET {{StoreAPI_HostAddress}}/product
+Authorization: Bearer {{access_token}}
 Accept: application/json
 
 ### Get Product By Id
 GET {{StoreAPI_HostAddress}}/product/1
+Authorization: Bearer {{access_token}}
 Accept: application/json
 
 ### Add new product
@@ -30,6 +96,9 @@ Accept: application/json
   "created_date": "2021-07-01T00:00:00",
   "modified_date": "2021-07-01T00:00:00"
 }
+
+### Multi-Part Exam-le
+https://stackoverflow.com/questions/61473990/how-to-post-an-image-with-form-data-in-rest-client-for-vscode
 
 
 ### Update product

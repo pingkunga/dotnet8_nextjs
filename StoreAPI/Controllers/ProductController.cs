@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using StoreAPI.Data;
 using StoreAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace StoreAPI.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class ProductController: ControllerBase
@@ -18,6 +20,7 @@ public class ProductController: ControllerBase
         _env = env;
     }
 
+    [AllowAnonymous]
     // GET: api/product/testConnection
     [HttpGet("TestConnection")]
     public void TestConnection()

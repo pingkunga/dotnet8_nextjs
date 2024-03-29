@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace StoreAPI.Models;
+﻿namespace StoreAPI.Models;
 
 public partial class category
 {
