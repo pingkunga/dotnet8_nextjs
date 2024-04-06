@@ -1,16 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using StoreAPI.Models;
+using StoreAPI.Models.Auth;
 
 namespace StoreAPI.Data;
 
-public partial class ApplicationDbContext : DbContext
+public partial class ApplicationDbContext : IdentityDbContext<IdentityUser>
+//public partial class ApplicationDbContext : DbContext
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
     {
     }
+
+    public DbSet<ApplicationUser> applicationUsers { get; set; }
 
     public virtual DbSet<category> categories { get; set; }
 
@@ -18,6 +22,9 @@ public partial class ApplicationDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+        //modelBuilder.Entity<category>().Metadata.SetIsTableExcludedFromMigrations(true);
+        //modelBuilder.Entity<product>().Metadata.SetIsTableExcludedFromMigrations(true);
         modelBuilder.Entity<category>(entity =>
         {
             entity.HasKey(e => e.category_id).HasName("categories_pkey");
