@@ -1,7 +1,7 @@
 "use client"
 
-import React from 'react'
-import { AppBar, Box, Container, IconButton, Toolbar, styled } from '@mui/material'
+import React, { use } from 'react'
+import { AppBar, Box, Container, IconButton, Theme, Toolbar, styled, useMediaQuery } from '@mui/material'
 import theme from '@/app/theme/Theme'
 import Image from 'next/image'
 import { MenuOutlined as MenuIcon } from '@mui/icons-material'
@@ -26,6 +26,12 @@ export default function Header() {
     color: theme.palette.text.secondary,
   }))
 
+  //Breakpoint
+  //Desktop = true, Mobile = false
+  const lgUp = useMediaQuery((theme:Theme) => theme.breakpoints.up('lg'))
+  //Mobile = true, Desktop = false
+  const lgDown = useMediaQuery((theme:Theme) => theme.breakpoints.down('lg'))
+
   return (
     <AppBarStyled position="sticky" elevation={5}>
       <Container maxWidth="lg">
@@ -38,13 +44,18 @@ export default function Header() {
             priority
           />
           <Box flexGrow={1} />
-          <IconButton 
+          {
+            lgDown ? (
+            <IconButton 
             edge="start"
             color="inherit"
             aria-label="menu"
-          >
-            <MenuIcon />
-          </IconButton>
+            >
+              <MenuIcon />
+            </IconButton>
+            ) : null
+          }
+          
         </ToolbarStyled>
       </Container>
     </AppBarStyled>
