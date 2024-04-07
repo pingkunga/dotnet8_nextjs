@@ -3,6 +3,7 @@
 import React from 'react'
 import { AppBar, Container, Toolbar, styled } from '@mui/material'
 import theme from '@/app/theme/Theme'
+import Image from 'next/image'
 
 export default function Header() {
   const AppBarStyled = styled(AppBar)(({theme}) => ({
@@ -28,7 +29,13 @@ export default function Header() {
     <AppBarStyled position="sticky" elevation={5}>
       <Container maxWidth="lg">
         <ToolbarStyled>
-          <h1>Header</h1>
+          <Image 
+            src={"/images/logos/dark-logo.svg"} 
+            alt="logo" 
+            width={170}
+            height={50}
+            priority
+          />
         </ToolbarStyled>
       </Container>
     </AppBarStyled>
