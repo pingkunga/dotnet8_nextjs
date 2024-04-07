@@ -3,7 +3,7 @@
 
 
 import { createTheme } from "@mui/material/styles"
-import { Colors } from "./colors"
+import { Colors } from "./Colors"
 // import { shadows } from "./Shadows"
 // import typography from "./Typography"
 

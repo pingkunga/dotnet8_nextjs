@@ -482,3 +482,7 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+
+test/public/*
+test/Prompt_Tailwind_Next_v1.0.0/*

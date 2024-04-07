@@ -48,3 +48,6 @@ npm i @mui/material-nextjs@5.15.11
 '''
 
 https://mui.com/material-ui/integrations/nextjs/
+
+components > route ไม่ได้
+(folder) > group folder
