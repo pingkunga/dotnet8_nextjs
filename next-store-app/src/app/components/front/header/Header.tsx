@@ -1,9 +1,10 @@
 "use client"
 
 import React from 'react'
-import { AppBar, Container, Toolbar, styled } from '@mui/material'
+import { AppBar, Box, Container, IconButton, Toolbar, styled } from '@mui/material'
 import theme from '@/app/theme/Theme'
 import Image from 'next/image'
+import { MenuOutlined as MenuIcon } from '@mui/icons-material'
 
 export default function Header() {
   const AppBarStyled = styled(AppBar)(({theme}) => ({
@@ -36,6 +37,14 @@ export default function Header() {
             height={50}
             priority
           />
+          <Box flexGrow={1} />
+          <IconButton 
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+          >
+            <MenuIcon />
+          </IconButton>
         </ToolbarStyled>
       </Container>
     </AppBarStyled>
