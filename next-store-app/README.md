@@ -53,3 +53,17 @@ components > route ไม่ได้
 (folder) > group folder
 
 useClient พวก reactHook เกือบทั้งหมด ถ้าทำเป็น App Rounter
+
+
+Motion Lib
+'''
+npm install framer-motion@10.16.4
+'''
+
+Obserable API ลดการใช้ useRef
+'''
+npm i react-intersection-observer@9.5.2
+'''
+
+
+
