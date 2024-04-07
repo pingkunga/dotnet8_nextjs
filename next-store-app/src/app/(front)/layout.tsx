@@ -1,5 +1,6 @@
 import React from 'react'
 import Header from '@/app/components/front/header/Header';
+import Footer from '@/app/components/front/footer/Footer';
 
 export default function FrontLayout({
         children,
@@ -11,6 +12,7 @@ export default function FrontLayout({
         <body>
             <Header />
             {children}
+            <Footer />
         </body>
     </html>
   )
