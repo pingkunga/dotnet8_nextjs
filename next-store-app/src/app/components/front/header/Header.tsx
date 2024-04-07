@@ -1,7 +1,7 @@
 "use client"
 
 import React from 'react'
-import { AppBar, Toolbar, styled } from '@mui/material'
+import { AppBar, Container, Toolbar, styled } from '@mui/material'
 import theme from '@/app/theme/Theme'
 
 export default function Header() {
@@ -26,9 +26,11 @@ export default function Header() {
 
   return (
     <AppBarStyled position="sticky" elevation={5}>
-      <ToolbarStyled>
-        <h1>Header</h1>
-      </ToolbarStyled>
+      <Container maxWidth="lg">
+        <ToolbarStyled>
+          <h1>Header</h1>
+        </ToolbarStyled>
+      </Container>
     </AppBarStyled>
   )
 }
