@@ -43,13 +43,15 @@ export default function Header() {
     <AppBarStyled position="sticky" elevation={5}>
       <Container maxWidth="lg">
         <ToolbarStyled>
-          <Image 
-            src={"/images/logos/dark-logo.svg"} 
-            alt="logo" 
-            width={170}
-            height={50}
-            priority
-          />
+          <Link href="/">
+            <Image 
+              src={"/images/logos/NextStoreLogo.svg"} 
+              alt="logo" 
+              width={170}
+              height={50}
+              priority
+            />
+          </Link>
           <Box flexGrow={1} />
           {
             lgDown ? (
