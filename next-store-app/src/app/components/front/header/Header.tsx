@@ -5,6 +5,7 @@ import { AppBar, Box, Button, Container, IconButton, Theme, Toolbar, styled, use
 import theme from '@/app/theme/Theme'
 import Image from 'next/image'
 import { MenuOutlined as MenuIcon } from '@mui/icons-material'
+import Link from 'next/link'
 
 export default function Header() {
   const AppBarStyled = styled(AppBar)(({theme}) => ({
@@ -67,20 +68,25 @@ export default function Header() {
               <>
                 <ButtonStyled color='inherit' 
                               variant='text' 
-                              href='/'> Home </ButtonStyled>
+                              href='/'
+                              LinkComponent={Link}> Home </ButtonStyled>
                 <ButtonStyled color='inherit' 
                               variant='text' 
-                              href='/about'> About </ButtonStyled>
+                              href='/about'
+                              LinkComponent={Link}> About </ButtonStyled>
                 <ButtonStyled color='inherit' 
                               variant='text' 
-                              href='/blog'> Blog </ButtonStyled>
+                              href='/blog'
+                              LinkComponent={Link}> Blog </ButtonStyled>
                 <ButtonStyled color='inherit' 
                               variant='text' 
-                              href='/contract'> Contract </ButtonStyled>
+                              href='/contact'
+                              LinkComponent={Link}> Contact </ButtonStyled>
 
                 <Button color='primary'
                         variant='contained' 
-                        href='/login'> Login </Button>
+                        href='/login'
+                        LinkComponent={Link}> Login </Button>
               </>
             ) : null
           }
