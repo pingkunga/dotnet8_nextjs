@@ -10,5 +10,6 @@ body {
 }
 
 a {
-    textDecoration: "none";
+    text-decoration: none;
+    color: inherit;
 }
