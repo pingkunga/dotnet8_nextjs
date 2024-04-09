@@ -1,10 +1,10 @@
-import { Box, Typography, Button, Divider } from "@mui/material";
-import Link from "next/link";
-import CustomTextField from "@/app/components/forms/theme-elements/CustomTextField";
-import CustomFormLabel from "@/app/components/forms/theme-elements/CustomFormLabel";
-import { Stack } from "@mui/system";
-import { registerType } from "@/app/(auth)/types/auth";
-import AuthSocialButtons from "./AuthSocialButtons";
+import { Box, Typography, Button, Divider } from "@mui/material"
+import Link from "next/link"
+import CustomTextField from "@/app/components/forms/theme-elements/CustomTextField"
+import CustomFormLabel from "@/app/components/forms/theme-elements/CustomFormLabel"
+import { Stack } from "@mui/system"
+import { registerType } from "@/app/(auth)/types/auth"
+import AuthSocialButtons from "./AuthSocialButtons"
 
 const AuthRegister = ({ title, subtitle, subtext }: registerType) => (
   <>
@@ -39,7 +39,12 @@ const AuthRegister = ({ title, subtitle, subtext }: registerType) => (
         <CustomFormLabel htmlFor="email">Email Adddress</CustomFormLabel>
         <CustomTextField id="email" variant="outlined" fullWidth />
         <CustomFormLabel htmlFor="password">Password</CustomFormLabel>
-        <CustomTextField id="password" variant="outlined" fullWidth />
+        <CustomTextField
+          id="password"
+          type="password"
+          variant="outlined"
+          fullWidth
+        />
       </Stack>
       <Button
         color="primary"
@@ -47,13 +52,13 @@ const AuthRegister = ({ title, subtitle, subtext }: registerType) => (
         size="large"
         fullWidth
         component={Link}
-        href="/auth/auth1/login"
+        href="/login"
       >
         Sign Up
       </Button>
     </Box>
     {subtitle}
   </>
-);
+)
 
-export default AuthRegister;
+export default AuthRegister

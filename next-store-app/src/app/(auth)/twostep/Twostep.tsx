@@ -1,16 +1,14 @@
 'use client'
 
+import { Box, Grid, Typography } from '@mui/material'
+import React from 'react'
+import Image from "next/image"
+import AuthTwoSteps from '@/app/(auth)/_authForms/AuthTwoSteps'
 import Link from 'next/link'
-import Box from '@mui/material/Box'
-import Grid from '@mui/material/Grid'
-import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
-import AuthLogin from '@/app/(auth)/_authForms/AuthLogin'
-import Image from 'next/image'
 
 type Props = {}
 
-export default function LoginPage({}: Props) {
+export default function TwostepPage({}: Props) {
   return (
     <Grid container spacing={0} justifyContent="center" sx={{ height: '100vh' }}>
       <Grid
@@ -77,36 +75,22 @@ export default function LoginPage({}: Props) {
         display="flex"
         justifyContent="center"
         alignItems="center"
-      >
+        >
         <Box p={4}>
-          <AuthLogin
-            title="Login"
-            subtext={
-              <Typography variant="h1" color="textSecondary" mb={1} fontSize={16}>
-                To Your Dashboard
-              </Typography>
-            }
-            subtitle={
-              <Stack direction="row" spacing={1} mt={3}>
-                <Typography color="textSecondary" variant="h1" fontSize={14} lineHeight='20px'>
-                  Dont have an account ?
-                </Typography>
-                <Typography
-                  component={Link}
-                  href="/register"
-                  fontWeight="500"
-                  sx={{
-                    textDecoration: 'none',
-                    color: 'primary.main',
-                  }}
-                >
-                  Register
-                </Typography>
-              </Stack>
-            }
-          />
+        <Typography variant="h4" fontWeight="700">
+            Two Step Verification
+            </Typography>
+
+            <Typography variant="subtitle1" color="textSecondary" mt={2} mb={1}>
+            We sent a verification code to your mobile. Enter the code from the mobile in the field
+            below.
+            </Typography>
+            <Typography variant="subtitle1" fontWeight="700" mb={1}>
+            ******1234
+            </Typography>
+            <AuthTwoSteps />
         </Box>
       </Grid>
-    </Grid>
+  </Grid>
   )
 }

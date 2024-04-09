@@ -37,59 +37,68 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => (
         </Typography>
       </Divider>
     </Box>
+    <form noValidate>
+      <Stack>
 
-    <Stack>
-      <Box>
-        <CustomFormLabel htmlFor="username">Username</CustomFormLabel>
-        <CustomTextField id="username" variant="outlined" fullWidth />
-      </Box>
-      <Box>
-        <CustomFormLabel htmlFor="password">Password</CustomFormLabel>
-        <CustomTextField
-          id="password"
-          type="password"
-          variant="outlined"
-          fullWidth
-        />
-      </Box>
-      <Stack
-        justifyContent="space-between"
-        direction="row"
-        alignItems="center"
-        my={2}
-      >
-        <FormGroup>
-          <FormControlLabel
-            control={<CustomCheckbox defaultChecked />}
-            label="Remeber this Device"
+        <Box>
+          <CustomFormLabel htmlFor="username">Username</CustomFormLabel>
+          <CustomTextField 
+            id="username" 
+            variant="outlined" 
+            fullWidth 
           />
-        </FormGroup>
-        <Typography
-          component={Link}
-          href="/auth/auth1/forgot-password"
-          fontWeight="500"
-          sx={{
-            textDecoration: "none",
-            color: "primary.main",
-          }}
+        </Box>
+
+        <Box>
+          <CustomFormLabel htmlFor="password">Password</CustomFormLabel>
+          <CustomTextField
+            id="password"
+            type="password"
+            variant="outlined"
+            fullWidth
+          />
+        </Box>
+
+        <Stack
+          justifyContent="space-between"
+          direction="row"
+          alignItems="center"
+          my={2}
         >
-          Forgot Password ?
-        </Typography>
+          <FormGroup>
+            <FormControlLabel
+              control={<CustomCheckbox defaultChecked />}
+              label="Remeber this Device"
+            />
+          </FormGroup>
+          <Typography
+            component={Link}
+            href="/forgotpass"
+            fontWeight="500"
+            sx={{
+              textDecoration: "none",
+              color: "primary.main",
+            }}
+          >
+            Forgot Password ?
+          </Typography>
+        </Stack>
+
       </Stack>
-    </Stack>
-    <Box>
-      <Button
-        color="primary"
-        variant="contained"
-        size="large"
-        fullWidth
-        component={Link}
-        href="/"
-        type="submit"
-      >
-        Sign In
-      </Button>
-    </Box>
+      <Box>
+        <Button
+          color="primary"
+          variant="contained"
+          size="large"
+          fullWidth
+          component={Link}
+          href="/"
+          type="submit"
+        >
+          Sign In
+        </Button>
+      </Box>
+    </form>
     {subtitle}
   </>
 );
