@@ -66,5 +66,23 @@ Obserable API ลดการใช้ useRef
 npm i react-intersection-observer@9.5.2
 '''
 
+backend component
 
+'''
+npm install @tabler/icons-react@2.39.0
+npm install lodash@4.17.21
+npm install @types/lodash@4.14.199
 
+npm install simplebar-react@3.2.4   //Custom-Scroll
+'''
+
+chart
+'''
+npm install apexcharts@3.43.0
+npm install react-apexcharts@1.4.1
+'''
+
+Mui Lab -> under dev 
+'''
+npm install @mui/lab
+'''
