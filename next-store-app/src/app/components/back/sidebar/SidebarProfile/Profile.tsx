@@ -7,7 +7,26 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import { IconPower } from '@tabler/icons-react'
 import Link from 'next/link'
 
+// Import authAction
+import { useRouter } from 'next/navigation'
+import { logout } from '@/app/components/services/actions/authAction'
+
 export const Profile = () => {
+
+   // Router
+   const router = useRouter()
+
+   // Logout Function
+   async function handleLogout() {
+     const response = await logout()
+     if (response.success) {
+       // console.log(response)
+       router.push("/login")
+     } else {
+       console.log(response.error)
+     }
+   }
+   
   const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up('lg'))
   //hard code ไว้ เพราะเอาไฟล์จาก  Theme มาเยอะๆ
   //ถ้าใน Theme ตัวอย่างเค้าจะซ่อน 
@@ -33,10 +52,9 @@ export const Profile = () => {
             <Tooltip title="Logout" placement="top">
               <IconButton
                 color="error"
-                component={Link}
-                href="/login"
                 aria-label="logout"
                 size="small"
+                onClick={handleLogout}
               >
                 <IconPower size="20" />
               </IconButton>
