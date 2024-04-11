@@ -11,8 +11,8 @@ export async function middleware(request: NextRequest) {
                              request.nextUrl.pathname === '/maintenance' || 
                              request.nextUrl.pathname === '/coming-soon'
         // อ่าน token จาก cookie
-        // const token = request.cookies.get('token')?.value
-        const token = false // มี token แสดงว่าล็อกอินแล้ว
+        const token = request.cookies.get('accessToken')?.value
+        //middleware.tsconst token = false // มี token แสดงว่าล็อกอินแล้ว
 
         // ดูว่าเป็นหน้า public หรือไม่
         console.log(token, isPublicPage)

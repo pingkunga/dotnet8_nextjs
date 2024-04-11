@@ -9,7 +9,7 @@ import Link from 'next/link'
 
 // Import authAction
 import { useRouter } from 'next/navigation'
-import { logout } from '@/app/components/services/actions/authAction'
+import { logout } from '@/app/services/actions/authAction'
 
 export const Profile = () => {
 
