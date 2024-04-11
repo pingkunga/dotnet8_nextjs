@@ -27,7 +27,8 @@ import { useRouter } from 'next/navigation'
 import { Controller, useForm } from "react-hook-form"
 import * as Yup from "yup"
 import { yupResolver } from "@hookform/resolvers/yup"
-import { login } from '@/app/components/services/actions/authAction'
+import { login } from '@/app/services/actions/authAction'
+import { useState } from 'react'
 
 // Types or Interfaces
 type User = {
@@ -55,6 +56,8 @@ export default function AuthLogin({ title, subtitle, subtext }: loginType) {
     defaultValues: initaalValues
   })
 
+  const [loginStatus, setLoginStatus] = useState('')
+
   const onSubmitLogin = async (data: User) => {
     console.log(data)
     // Call API
@@ -64,9 +67,11 @@ export default function AuthLogin({ title, subtitle, subtext }: loginType) {
     // router.push('/')
     if (response.success) {
       console.log('Login Success')
+      setLoginStatus("Success")
       router.push('/backend/dashboard')
     }
     else{
+      setLoginStatus("Error")
       console.log('Login Failed' , response.data);
     }
   }
@@ -96,6 +101,17 @@ export default function AuthLogin({ title, subtitle, subtext }: loginType) {
         </Divider>
       </Box>
       
+      {/* Login Status */}
+    
+      { loginStatus && (
+          <Alert severity={loginStatus === 'Success' ? 'success':'error'} sx={{ mt: 2 }}>
+            <Typography variant="body2">
+              {loginStatus === 'Success' ? 'Login Successfull' : 'Login Failed'}
+            </Typography>
+          </Alert>
+        )
+      }
+
       {/* form noValidate use with yup*/}
       <form 
        onSubmit={handleSubmit(onSubmitLogin)}
