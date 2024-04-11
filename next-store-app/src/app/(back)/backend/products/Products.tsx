@@ -1,18 +1,27 @@
 "use client"
 
+//React
 import React, { useEffect, useState } from 'react'
+
+// Material-UI
+import { Box
+       , Table
+       , TableBody
+       , TableCell
+       , TableContainer
+       , TableHead
+       , TableRow
+       , Paper, 
+       Card,
+       CardContent,
+       Stack,
+       Typography,
+       Button} from '@mui/material'
+
+// Custom Components
 import DashboardCard from '@/app/components/back/shared/DashboardCard'
-import { Box } from '@mui/material'
 
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableContainer from '@mui/material/TableContainer'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
-import Paper from '@mui/material/Paper'
-
-//  Import Get All Products Function
+// Business Logic
 import { getAllProducts } from '@/app/services/actions/productAction'
 
 type Product = {
@@ -49,10 +58,30 @@ export default function ProductsPage({ }: Props) {
 
   return (
     <>
-      <Box mt={2}>
+      <Card
+        sx={{ padding: 0, border: `1px solid #eee`, borderRadius: 1 }}
+        variant={"outlined"}
+      >
+        <CardContent sx={{ pt: "16px", pb: "0px" }}>
+          <Stack
+            direction="row"
+            spacing={2}
+            justifyContent="space-between"
+            alignItems={"center"}
+          >
+            <Typography variant="h5">Products</Typography>
+            <Button
+              variant="contained"
+              color="primary"
+            >
+              Add Product
+            </Button>
+          </Stack>
+        </CardContent>
+      {/* <Box mt={2}>
         <DashboardCard title="Products">
           
-          <TableContainer component={Paper}>
+          <TableContainer component={Paper}> */}
               <Table sx={{ minWidth: 650 }} aria-label="simple table">
                   <TableHead>
                       <TableRow>
@@ -80,10 +109,11 @@ export default function ProductsPage({ }: Props) {
                       ))}
                   </TableBody>
               </Table>
-          </TableContainer>
+          {/* </TableContainer>
 
         </DashboardCard>
-      </Box>
+      </Box> */}
+      </Card>
     </>
   )
 }
