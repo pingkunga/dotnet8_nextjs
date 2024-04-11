@@ -1,29 +1,89 @@
 "use client"
 
+import React, { useEffect, useState } from 'react'
 import DashboardCard from '@/app/components/back/shared/DashboardCard'
-import { Typography, Box } from '@mui/material'
-import React from 'react'
+import { Box } from '@mui/material'
+
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
+import Paper from '@mui/material/Paper'
+
+//  Import Get All Products Function
+import { getAllProducts } from '@/app/services/actions/productAction'
+
+type Product = {
+  product_id: number
+  category_name: string
+  product_name: string
+  unit_price: number
+  product_picture: string
+  unit_in_stock: number
+  created_date: string
+  modified_date: string
+}
 
 type Props = {}
 
-export default function ProductsPage({}: Props) {
+export default function ProductsPage({ }: Props) {
+
+  const [products, setProducts] = useState([])
+
+  const fetchProducts = async () => {
+    try {
+      const response = await getAllProducts()
+      setProducts(response)
+    } catch (error) {
+      console.error('An error occurred while fetching products:', error)
+    }
+  }
+
+  useEffect(() => {
+    fetchProducts()
+  }, [])
+
+  console.log(products)
+
   return (
     <>
-        <Box mt={2}>
-            <DashboardCard title="Products">
-                <Typography>This is a product page</Typography>
-            </DashboardCard>
-        </Box>
+      <Box mt={2}>
+        <DashboardCard title="Products">
+          
+          <TableContainer component={Paper}>
+              <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                  <TableHead>
+                      <TableRow>
+                          <TableCell>ID</TableCell>
+                          <TableCell>Product</TableCell>
+                          <TableCell>Category</TableCell>
+                          <TableCell>Price</TableCell>
+                          <TableCell>Unit</TableCell>
+                      </TableRow>
+                  </TableHead>
+                  <TableBody>
+                      {products.map((product: Product) => (
+                          <TableRow
+                              key={product.product_id}
+                              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                          >
+                              <TableCell component="th" scope="product">
+                                  {product.product_id}
+                              </TableCell>
+                              <TableCell>{product.product_name}</TableCell>
+                              <TableCell>{product.category_name}</TableCell>
+                              <TableCell>{product.unit_price}</TableCell>
+                              <TableCell>{product.unit_in_stock}</TableCell>
+                          </TableRow>
+                      ))}
+                  </TableBody>
+              </Table>
+          </TableContainer>
 
-        <Box mt={2}>
-            <DashboardCard title="Summary">
-                <>
-                    <Typography>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptatibus eligendi sequi adipisci minima eum quaerat, sapiente, debitis possimus reprehenderit placeat quo error quibusdam saepe necessitatibus asperiores eaque rerum dignissimos? Perspiciatis facere delectus pariatur magnam accusantium ullam eligendi natus iusto? Fuga dolores quisquam iusto ullam dignissimos accusantium odio quasi, voluptas doloribus?</Typography>
-
-                    <Typography mt={2}>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptatibus eligendi sequi adipisci minima eum quaerat, sapiente, debitis possimus reprehenderit placeat quo error quibusdam saepe necessitatibus asperiores eaque rerum dignissimos? Perspiciatis facere delectus pariatur magnam accusantium ullam eligendi natus iusto? Fuga dolores quisquam iusto ullam dignissimos accusantium odio quasi, voluptas doloribus?</Typography>
-                </>
-            </DashboardCard>
-        </Box>
+        </DashboardCard>
+      </Box>
     </>
   )
 }
