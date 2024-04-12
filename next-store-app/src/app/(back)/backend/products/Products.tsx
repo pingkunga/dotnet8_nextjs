@@ -18,6 +18,10 @@ import {
   Stack,
   Typography,
   Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 
 // Custom Components
@@ -26,6 +30,8 @@ import DashboardCard from "@/app/components/back/shared/DashboardCard";
 // Business Logic
 import { getAllProducts } from "@/app/services/actions/productAction";
 import { IconEdit, IconEye, IconPlus, IconTrash } from "@tabler/icons-react";
+import { formatDate, numberWithCommas } from "@/app/utils/CommonUtil";
+import { Form } from "react-hook-form";
 
 type Product = {
   product_id: number;
@@ -58,6 +64,16 @@ export default function ProductsPage({}: Props) {
 
   console.log(products);
 
+  const [openDialog, setOpenDialog] = useState(false);
+  
+  const handleDialogOpen = () => {
+    setOpenDialog(true);
+  }
+
+  const handleDialogClose = () => {
+    setOpenDialog(false);
+  }
+
   return (
     <>
       <Card
@@ -72,7 +88,7 @@ export default function ProductsPage({}: Props) {
             alignItems={"center"}
           >
             <Typography variant="h5">Products</Typography>
-            <Button variant="contained" color="primary">
+            <Button variant="contained" color="primary" onClick={handleDialogOpen}>
               <IconPlus size={16} /> &nbsp;Add Product
             </Button>
           </Stack>
@@ -147,9 +163,9 @@ export default function ProductsPage({}: Props) {
                   </TableCell>
                   <TableCell>{product.product_name}</TableCell>
                   <TableCell>{product.category_name}</TableCell>
-                  <TableCell>{product.unit_price}</TableCell>
+                  <TableCell>{numberWithCommas(product.unit_price)}</TableCell>
                   <TableCell>{product.unit_in_stock}</TableCell>
-                  <TableCell>{product.created_date}</TableCell>
+                  <TableCell>{formatDate(product.created_date)}</TableCell>
                   <TableCell>
                     {/* Button View, Edit and Delete with Icon */}
                     <Button
@@ -180,6 +196,22 @@ export default function ProductsPage({}: Props) {
           </Table>
         </Box>
       </Card>
+
+      { /* Add Dialog for Add Product */ }
+      <Dialog
+        open={openDialog}
+        aria-labelledby="form-dialog-title">
+          <form noValidate>
+            <DialogTitle id="form-dialog-title">Add Product</DialogTitle>
+            <DialogContent>
+              <Typography variant="h6">Product Information</Typography>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleDialogClose} color="primary">Cancel</Button>
+              <Button type="submit" color="primary">Save</Button>
+            </DialogActions>
+          </form>
+      </Dialog>
     </>
   );
 }
