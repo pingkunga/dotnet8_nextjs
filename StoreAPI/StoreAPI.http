@@ -129,7 +129,7 @@ Content-Disposition: form-data; name="category_id"
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
 Content-Disposition: form-data; name="product_name" 
 
-"Xiaomi 13T Pro"
+Xiaomi 13T Pro
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
 Content-Disposition: form-data; name="unit_price" 
 
