@@ -38,7 +38,29 @@ public class ProductController: ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<product>>> GetProducts()
     {
-        return await _context.products.ToListAsync();
+        //return await _context.products.ToListAsync();
+
+
+        //Join with categories
+        var products = await _context.products
+            .Join(
+                _context.categories,
+                p => p.category_id,
+                c => c.category_id,
+                (p, c) => new
+                {
+                    p.product_id,
+                    p.product_name,
+                    p.unit_price,
+                    p.unit_in_stock,
+                    c.category_name,
+                    p.product_picture,
+                    p.created_date,
+                    p.modified_date
+                }
+            )
+            .OrderByDescending(p => p.product_id)
+            .ToListAsync();
     }
 
     [HttpGet("{id}")]
