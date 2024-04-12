@@ -35,9 +35,9 @@ import {
 import DashboardCard from "@/app/components/back/shared/DashboardCard";
 
 // Business Logic
-import { getAllProducts } from "@/app/services/actions/productAction";
+import { createProduct, getAllProducts } from "@/app/services/actions/productAction";
 import { IconEdit, IconEye, IconPlus, IconTrash, IconX } from "@tabler/icons-react";
-import { formatDate, numberWithCommas } from "@/app/utils/CommonUtil";
+import { formatDate, formatDateToISOWithoutMilliseconds, numberWithCommas } from "@/app/utils/CommonUtil";
 
 // React Hook Form and Yup for Form Validation
 import { Controller, useForm } from "react-hook-form"
@@ -130,16 +130,41 @@ export default function ProductsPage({}: Props) {
       unit_price: 0,
       unit_in_stock: 0,
       product_picture: "",
-      created_date: new Date().toISOString(),
-      modified_date: new Date().toISOString(),
+      created_date: formatDateToISOWithoutMilliseconds(new Date()),
+      modified_date: formatDateToISOWithoutMilliseconds(new Date()),
     },
     resolver: yupResolver(productPostSchema),
   });
 
   //handle form submit
   const onSubmitProduct = async (data: ProductPost) => {
-    console.log(data);
+    //console.log(data);
+    const formData = new FormData();
+    formData.append("category_id", data.category_id);
+    formData.append("product_name", data.product_name);
+    formData.append("unit_price", data.unit_price.toString());
+    formData.append("unit_in_stock", data.unit_in_stock.toString());
+    formData.append("product_picture", data.product_picture);
+    formData.append("created_date", data.created_date);
+    formData.append("modified_date", data.modified_date);
+
+    // Append image file to form data
+    if (fileInputRef.current.files[0]) {
+      formData.append("image", fileInputRef.current.files[0])
+    }
+    
+    // Display the key/value pairs
+    new Response(formData).text().then(console.log);
+
     // Call the API to save the data
+    try {
+      const response = await createProduct(formData)
+      console.log(response)
+      fetchProducts() 
+      handleDialogClose() 
+    } catch (error) {
+      console.error("Failed to create product:", error);
+    }
   }
 
   //Dropdown for Category - refactor to call api later
