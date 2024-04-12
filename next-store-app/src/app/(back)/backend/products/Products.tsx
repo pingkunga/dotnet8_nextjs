@@ -1,7 +1,7 @@
 "use client";
 
 //React
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 // Material-UI
 import {
@@ -28,6 +28,7 @@ import {
   InputLabel,
   Select,
   FormHelperText,
+  IconButton,
 } from "@mui/material";
 
 // Custom Components
@@ -35,13 +36,14 @@ import DashboardCard from "@/app/components/back/shared/DashboardCard";
 
 // Business Logic
 import { getAllProducts } from "@/app/services/actions/productAction";
-import { IconEdit, IconEye, IconPlus, IconTrash } from "@tabler/icons-react";
+import { IconEdit, IconEye, IconPlus, IconTrash, IconX } from "@tabler/icons-react";
 import { formatDate, numberWithCommas } from "@/app/utils/CommonUtil";
 
 // React Hook Form and Yup for Form Validation
 import { Controller, useForm } from "react-hook-form"
 import * as Yup from "yup"
 import { yupResolver } from "@hookform/resolvers/yup"
+import { FileUploadOutlined } from "@mui/icons-material";
 
 type Product = {
   product_id: number;
@@ -134,6 +136,38 @@ export default function ProductsPage({}: Props) {
     { name: "Smart Watch", value: "3" },
     { name: "Labtop", value: "4"}
   ]
+
+  // State for image preview
+  const [imagePreviewUrl, setImagePreviewUrl] = useState("")
+  const [imageFileName, setImageFileName] = useState("")
+  const fileInputRef:any = useRef(null); // Ref for the file input
+ 
+  // Handle file change
+  const handleFileChange = (event: any) => {
+      const file = event.target.files[0];
+      if (file) {
+        const reader: any = new FileReader()
+    
+        reader.onloadend = () => {
+          // console.log(reader.result)
+          setImagePreviewUrl(reader.result) // This is now the base64 encoded data URL of the file
+          setImageFileName(file.name) // Set the file name
+        }
+    
+        reader.readAsDataURL(file); // Read the file as a Data URL
+      } else {
+        setImagePreviewUrl('')// Reset or clear the preview if no file is selected
+        setImageFileName('')
+      }
+    }  
+    
+    // Remove image preview
+    const removeImage = () => {
+      // Clear the preview URL
+      setImagePreviewUrl('')
+      // Clear the file input value
+      fileInputRef.current.value = ''
+    }
 
   return (
     <>
@@ -268,7 +302,7 @@ export default function ProductsPage({}: Props) {
             <DialogTitle id="form-dialog-title">Add Product</DialogTitle>
 
             <DialogContent sx={{width: '350px'}}>
-              
+
               <FormControl fullWidth variant="outlined" margin="dense">
                 <InputLabel id="category_name-label">Category</InputLabel>
                 <Controller
@@ -368,6 +402,38 @@ export default function ProductsPage({}: Props) {
                   />
                 )}
               />
+
+              { /* image choose and preview */}
+              <TextField
+                    variant="standard"          
+                    type="text"
+                    InputProps={{
+                      endAdornment: (
+                        <IconButton component="label">
+                          <FileUploadOutlined />
+                          <input
+                            accept="image/*"
+                            type="file"
+                            hidden
+                            onChange={handleFileChange}
+                            ref={fileInputRef}
+                          />
+                        </IconButton>
+                      ),
+                    value: imageFileName ? imageFileName : "",
+                    }}
+              />
+
+              {imagePreviewUrl && (
+                <Box sx={{ mt: 2, mb: 2, textAlign: 'center' }}>
+                  <Box sx={{ textAlign: 'right'}}>
+                    <Button onClick={removeImage} variant="outlined" style={{ display: 'inline-block'}}>
+                      <IconX size={16} />
+                    </Button>
+                  </Box>
+                  <img src={imagePreviewUrl} alt="Preview" style={{ maxWidth: '100%', maxHeight: '300px', borderRadius: '10px' }} />
+                </Box>
+              )}
 
             </DialogContent>
             <DialogActions>
