@@ -87,7 +87,7 @@ public class ProductController: ControllerBase
         if(image != null){
             string fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
 
-            string uploadFolder = Path.Combine(_env.ContentRootPath, "uploads");
+            string uploadFolder = Path.Combine(_env.WebRootPath, "uploads");
 
             if (!Directory.Exists(uploadFolder))
             {
