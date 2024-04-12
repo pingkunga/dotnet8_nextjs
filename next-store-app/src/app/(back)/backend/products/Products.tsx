@@ -98,6 +98,19 @@ export default function ProductsPage({}: Props) {
 
   const handleDialogClose = () => {
     setOpenDialog(false);
+    setImagePreviewUrl('') // Clear the image preview
+    setImageFileName('') // Clear the image file name
+    
+    //Reset Form
+    reset({
+      category_id: "",
+      product_name: "",
+      unit_price: 0,
+      unit_in_stock: 0,
+      product_picture: "",
+      created_date: new Date().toISOString(),
+      modified_date: new Date().toISOString(),
+    });
   }
 
 
@@ -110,7 +123,7 @@ export default function ProductsPage({}: Props) {
     product_picture: Yup.string().required("Product Picture is required"),
   });
 
-  const { control, handleSubmit, formState: { errors } } = useForm<ProductPost>({
+  const { control, handleSubmit, formState: { errors }, reset, } = useForm<ProductPost>({
     defaultValues: {
       category_id: "",
       product_name: "",
