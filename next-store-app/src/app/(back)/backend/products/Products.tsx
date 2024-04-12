@@ -22,6 +22,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  TextField,
 } from "@mui/material";
 
 // Custom Components
@@ -31,7 +32,11 @@ import DashboardCard from "@/app/components/back/shared/DashboardCard";
 import { getAllProducts } from "@/app/services/actions/productAction";
 import { IconEdit, IconEye, IconPlus, IconTrash } from "@tabler/icons-react";
 import { formatDate, numberWithCommas } from "@/app/utils/CommonUtil";
-import { Form } from "react-hook-form";
+
+// React Hook Form and Yup for Form Validation
+import { Controller, useForm } from "react-hook-form"
+import * as Yup from "yup"
+import { yupResolver } from "@hookform/resolvers/yup"
 
 type Product = {
   product_id: number;
@@ -43,6 +48,18 @@ type Product = {
   created_date: string;
   modified_date: string;
 };
+
+// Types for product post
+type ProductPost = {
+  category_id: string
+  product_name: string
+  unit_price: number
+  unit_in_stock: number
+  product_picture: string
+  created_date: string
+  modified_date: string
+}
+
 
 type Props = {};
 
@@ -72,6 +89,35 @@ export default function ProductsPage({}: Props) {
 
   const handleDialogClose = () => {
     setOpenDialog(false);
+  }
+
+
+  //Form Validation
+  const productPostSchema: any = Yup.object().shape({
+    category_id: Yup.string().required("Category is required"),
+    product_name: Yup.string().required("Product Name is required"),
+    unit_price: Yup.number().required("Unit Price is required"),
+    unit_in_stock: Yup.number().required("Unit in Stock is required"),
+    product_picture: Yup.string().required("Product Picture is required"),
+  });
+
+  const { control, handleSubmit, formState: { errors } } = useForm<ProductPost>({
+    defaultValues: {
+      category_id: "",
+      product_name: "",
+      unit_price: 0,
+      unit_in_stock: 0,
+      product_picture: "",
+      created_date: new Date().toISOString(),
+      modified_date: new Date().toISOString(),
+    },
+    resolver: yupResolver(productPostSchema),
+  });
+
+  //handle form submit
+  const onSubmitProduct = async (data: ProductPost) => {
+    console.log(data);
+    // Call the API to save the data
   }
 
   return (
@@ -201,10 +247,84 @@ export default function ProductsPage({}: Props) {
       <Dialog
         open={openDialog}
         aria-labelledby="form-dialog-title">
-          <form noValidate>
+          <form noValidate 
+                onSubmit={handleSubmit(onSubmitProduct)}  
+                autoComplete="off">
             <DialogTitle id="form-dialog-title">Add Product</DialogTitle>
             <DialogContent>
-              <Typography variant="h6">Product Information</Typography>
+              <Controller
+                name="product_name"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    autoFocus
+                    margin="dense"
+                    id="product_name"
+                    label="Product Name"
+                    type="text"
+                    fullWidth
+                    variant="outlined"
+                    error={errors.product_name ? true : false}
+                    helperText={errors.product_name?.message}
+                  />
+                )}
+              />
+              <Controller
+                name="unit_price"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    margin="dense"
+                    id="unit_price"
+                    label="Unit Price"
+                    type="number"
+                    fullWidth
+                    variant="outlined"
+                    error={errors.unit_price ? true : false}
+                    helperText={errors.unit_price?.message}
+                  />
+                )}
+              />
+
+              <Controller
+                name="unit_in_stock"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    margin="dense"
+                    id="unit_in_stock"
+                    label="Unit in Stock"
+                    type="number"
+                    fullWidth
+                    variant="outlined"
+                    error={errors.unit_in_stock ? true : false}
+                    helperText={errors.unit_in_stock?.message}
+                  />
+                )}
+              />
+
+
+              <Controller 
+                name="product_picture"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    margin="dense"
+                    id="product_picture_name"
+                    label="Product Picture Name"
+                    type="text"
+                    fullWidth
+                    variant="outlined"
+                    error={errors.product_picture ? true : false}
+                    helperText={errors.product_picture?.message}
+                  />
+                )}
+              />
+
             </DialogContent>
             <DialogActions>
               <Button onClick={handleDialogClose} color="primary">Cancel</Button>
