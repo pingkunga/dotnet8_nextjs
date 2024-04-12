@@ -61,6 +61,8 @@ public class ProductController: ControllerBase
             )
             .OrderByDescending(p => p.product_id)
             .ToListAsync();
+
+        return Ok(products);
     }
 
     [HttpGet("{id}")]
