@@ -23,6 +23,11 @@ import {
   DialogContent,
   DialogActions,
   TextField,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Select,
+  FormHelperText,
 } from "@mui/material";
 
 // Custom Components
@@ -59,6 +64,8 @@ type ProductPost = {
   created_date: string
   modified_date: string
 }
+
+
 
 
 type Props = {};
@@ -119,6 +126,14 @@ export default function ProductsPage({}: Props) {
     console.log(data);
     // Call the API to save the data
   }
+
+  //Dropdown for Category - refactor to call api later
+  const categories = [
+    { name: "Mobile", value: "1" },
+    { name: "Tablet", value: "2" },
+    { name: "Smart Watch", value: "3" },
+    { name: "Labtop", value: "4"}
+  ]
 
   return (
     <>
@@ -251,7 +266,36 @@ export default function ProductsPage({}: Props) {
                 onSubmit={handleSubmit(onSubmitProduct)}  
                 autoComplete="off">
             <DialogTitle id="form-dialog-title">Add Product</DialogTitle>
-            <DialogContent>
+
+            <DialogContent sx={{width: '350px'}}>
+              
+              <FormControl fullWidth variant="outlined" margin="dense">
+                <InputLabel id="category_name-label">Category</InputLabel>
+                <Controller
+                  name="category_id"
+                  control={control}
+                  render={({ field: { onChange, value }, fieldState: { error } }) => (
+                    <Select
+                      labelId="category_name-label"
+                      id="category_id"
+                      label="Category"
+                      value={value}
+                      onChange={onChange} // Use field.onChange for change handler
+                      error={!!error} // Use fieldState.error to determine if there's an error
+                    >
+                      {categories.map((category) => (
+                        <MenuItem key={category.value} value={category.value}>
+                          {category.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  )}
+                />
+                <FormHelperText error={errors.category_id ? true : false}>
+                  {errors.category_id?.message}
+                </FormHelperText>
+              </FormControl>
+
               <Controller
                 name="product_name"
                 control={control}
