@@ -187,3 +187,11 @@ DELETE {{StoreAPI_HostAddress}}/product/15
 Accept: application/json
 
 ``` 
+
+
+### Get All Categories
+GET {{StoreAPI_HostAddress}}/category
+Authorization : Bearer {{access_token}}
+Accept: application/json
+
+
