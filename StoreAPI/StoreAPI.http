@@ -93,11 +93,34 @@ Accept: application/json
 GET {{StoreAPI_HostAddress}}/product/testConnection
 Accept: application/json
 
-
+######################################################
+############ CRUD
+######################################################
 ### Get All Products
+GET {{StoreAPI_HostAddress}}/product
+Authorization: Bearer {{access_token}}
+Accept: application/json
+
+### Get All Products with Pagination
 GET {{StoreAPI_HostAddress}}/product?page=1&pageSize=2
 Authorization: Bearer {{access_token}}
 Accept: application/json
+
+### Get All Products with search
+GET {{StoreAPI_HostAddress}}/product?searchCategory=1
+Authorization: Bearer {{access_token}}
+Accept: application/json
+
+### Get All Products with String search
+GET {{StoreAPI_HostAddress}}/product?searchQuery=iP
+Authorization: Bearer {{access_token}}
+Accept: application/json
+
+### Get All Products with String search
+GET {{StoreAPI_HostAddress}}/product?page=1&pageSize=1&searchCategory=1&searchQuery=iP
+Authorization: Bearer {{access_token}}
+Accept: application/json
+
 
 ### Get Product By Id
 GET {{StoreAPI_HostAddress}}/product/1

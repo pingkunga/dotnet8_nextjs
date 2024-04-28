@@ -40,13 +40,15 @@ public class ProductController: ControllerBase
     // 1 pagination
     // 2 search
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<product>>> GetProducts([FromQuery] int page=1, [FromQuery] int pageSize=10)
+    public async Task<ActionResult<IEnumerable<product>>> GetProducts([FromQuery] int page=1, [FromQuery] int pageSize=10
+                                                                    , [FromQuery] int? searchCategory=null
+                                                                    , [FromQuery] string searchQuery=null)
     {
         //return await _context.products.ToListAsync();
 
         int skip = (page - 1) * pageSize;
         //Join with categories
-        var products = await _context.products
+        var query = _context.products
             .Join(
                 _context.categories,
                 p => p.category_id,
@@ -60,17 +62,37 @@ public class ProductController: ControllerBase
                     c.category_name,
                     p.product_picture,
                     p.created_date,
-                    p.modified_date
+                    p.modified_date,
+                    p.category_id
                 }
-            )
-            .OrderByDescending(p => p.product_id)
-            .Skip(skip)
-            .Take(pageSize)
-            .ToListAsync();
+            );
+
+        if (searchCategory.HasValue)
+        {
+            query = query.Where(p => p.category_id == searchCategory);
+        }
+        
+        if (!string.IsNullOrEmpty(searchQuery))
+        {
+            //Case sensitive
+            //query = query.Where(p => EF.Functions.Like(p.product_name, $"%{searchQuery}%"));
+            
+            //Case insensitive
+            query = query.Where(p => EF.Functions.ILike(p.product_name!, $"%{searchQuery}%"));
+        }
+
+        var products = await query
+                        .OrderByDescending(p => p.product_id)
+                        .Skip(skip)
+                        .Take(pageSize)
+                        .ToListAsync();
 
         int totalRecords = await _context.products.CountAsync();
+
+        int currentRecords = products.Count();
         
-        return Ok(new {Total = totalRecords
+        return Ok(new {TotalRecords = totalRecords
+                     , CurrentRecords = currentRecords
                      , Products = products});
     }
 
