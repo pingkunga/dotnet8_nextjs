@@ -68,7 +68,10 @@ public class ProductController: ControllerBase
             .Take(pageSize)
             .ToListAsync();
 
-        return Ok(products);
+        int totalRecords = await _context.products.CountAsync();
+        
+        return Ok(new {Total = totalRecords
+                     , Products = products});
     }
 
     [HttpGet("{id}")]
