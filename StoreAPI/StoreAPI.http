@@ -95,7 +95,7 @@ Accept: application/json
 
 
 ### Get All Products
-GET {{StoreAPI_HostAddress}}/product
+GET {{StoreAPI_HostAddress}}/product?page=1&pageSize=2
 Authorization: Bearer {{access_token}}
 Accept: application/json
 
