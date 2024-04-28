@@ -28,11 +28,11 @@ Content-Type: application/json
 }
 
 ### [Auth] Register Admin
-POST {{AuthAPI_HostAddress}}/register-admin
+POST {{AuthAPI_HostAddress}}/register-manager
 Content-Type: application/json
 
 {
-  "username": "pingkungadm1",
+  "username": "pingkung_manager",
   "email": "pingkungadm@gmail.com",
   "password": "Admin@1234",
   "firstName": "Pingkung",
@@ -44,7 +44,7 @@ POST {{AuthAPI_HostAddress}}/register-admin
 Content-Type: application/json
 
 {
-  "username": "pingkungadmc",
+  "username": "pingkungadmin",
   "email": "pingkungadmc@gmail.com",
   "password": "Admin@1234",
   "firstName": "Pingkung",
@@ -61,12 +61,22 @@ Content-Type: application/json
   "password": "As@1234"
 }
 
+### [Auth] Login Manager
+POST {{AuthAPI_HostAddress}}/login
+Content-Type: application/json
+
+{
+  "username": "pingkung_manager",
+  "password": "Admin@1234"
+}
+
+
 ### [Auth] Login Admin
 POST {{AuthAPI_HostAddress}}/login
 Content-Type: application/json
 
 {
-  "username": "pingkungadmc",
+  "username": "pingkungadmin",
   "password": "Admin@1234"
 }
 
