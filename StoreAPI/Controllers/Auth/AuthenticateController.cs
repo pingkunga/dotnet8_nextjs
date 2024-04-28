@@ -128,8 +128,10 @@ public class AuthenticateController : ControllerBase
                 Message = "User creation failed! Please check user details and try again."
             };
         }
-
+        
         await _userManager.AddToRoleAsync(user, UserRoles.User);
+        await _userManager.AddToRoleAsync(user, UserRoles.Manager);
+        await _userManager.AddToRoleAsync(user, UserRoles.Admin);
 
         return new AuthResponse
         {
@@ -193,8 +195,8 @@ public class AuthenticateController : ControllerBase
         }
 
         //await CheckRole();
-
-        await _userManager.AddToRoleAsync(user, UserRoles.Admin);
+        await _userManager.AddToRoleAsync(user, UserRoles.User);
+        await _userManager.AddToRoleAsync(user, UserRoles.Manager);
 
         return new AuthResponse
         {
@@ -254,7 +256,7 @@ public class AuthenticateController : ControllerBase
 
     private async Task<AuthResponse> LoginAsync(LoginModel model)
     {
-        var user = await _userManager.FindByNameAsync(model.Username!);
+        var user = await _userManager.FindByNameAsync(model.Username);
 
         if (user is null)
         {
@@ -306,8 +308,31 @@ public class AuthenticateController : ControllerBase
             MessageCode = "Success",
             Message = "Login successful",
             accessToken = new JwtSecurityTokenHandler().WriteToken(token),
-            refreshToken = refreshToken
+            refreshToken = refreshToken,
+            UserData = new UserData
+            {
+                Username = user.UserName,
+                Email = user.Email,
+                Role = GetMaxPrivilege(userRoles)
+            }
+            
         };
+    }
+
+    private static String GetMaxPrivilege(IList<String> pRoles)
+    {
+        if (pRoles.Contains(UserRoles.Admin))
+        {
+            return UserRoles.Admin;
+        }
+        else if (pRoles.Contains(UserRoles.Manager))
+        {
+            return UserRoles.Manager;
+        }
+        else
+        {
+            return UserRoles.User;
+        }
     }
 
     [HttpPost]
