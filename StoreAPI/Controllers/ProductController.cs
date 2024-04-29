@@ -131,6 +131,10 @@ public class ProductController: ControllerBase
             }
             product.product_picture = fileName;
         }
+        else
+        {
+            product.product_picture = "noimg.jpg";
+        }
 
         await _context.SaveChangesAsync();
 
@@ -139,17 +143,55 @@ public class ProductController: ControllerBase
 
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<product>> UpdateProduct(int id, product product)
+    public async Task<ActionResult<product>> UpdateProduct(int id, [FromForm] product product, IFormFile? image)
     {
         if (id != product.product_id)
         {
             return BadRequest();
         }
 
-        _context.Entry(product).State = EntityState.Modified;
+        var existingProduct = await _context.products.FindAsync(id);
+        if (existingProduct == null)
+        {
+            return NotFound();
+        }
+
+        existingProduct.product_name = product.product_name;
+        existingProduct.unit_price = product.unit_price;
+        existingProduct.unit_in_stock = product.unit_in_stock;
+        existingProduct.category_id = product.category_id;
+        existingProduct.modified_date = DateTime.Now;
+
+
+        if(image != null){
+            string fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
+
+            string uploadFolder = Path.Combine(_env.WebRootPath, "uploads");
+
+            if (!Directory.Exists(uploadFolder))
+            {
+                Directory.CreateDirectory(uploadFolder);
+            }
+
+            using (var fileStream = new FileStream(Path.Combine(uploadFolder, fileName), FileMode.Create))
+            {
+                await image.CopyToAsync(fileStream);
+            }
+
+            if (existingProduct.product_picture != "noimg.jpg"){
+                string oldFilePath = Path.Combine(uploadFolder, existingProduct.product_picture);
+                if (System.IO.File.Exists(oldFilePath))
+                {
+                    System.IO.File.Delete(oldFilePath);
+                }
+            }
+            existingProduct.product_picture = fileName;
+        }
+
+        _context.Entry(existingProduct).State = EntityState.Modified;
         await _context.SaveChangesAsync();
 
-        return Ok(product);
+        return Ok(existingProduct);
     }
 
     [HttpDelete("{id}")]
@@ -160,6 +202,15 @@ public class ProductController: ControllerBase
         if (product == null)
         {
             return NotFound();
+        }
+
+        if (product.product_picture != "noimg.jpg"){
+            string uploadFolder = Path.Combine(_env.WebRootPath, "uploads");
+            string filePath = Path.Combine(uploadFolder, product.product_picture);
+            if (System.IO.File.Exists(filePath))
+            {
+                System.IO.File.Delete(filePath);
+            }
         }
 
         _context.products.Remove(product);
