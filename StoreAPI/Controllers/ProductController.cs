@@ -111,7 +111,7 @@ public class ProductController: ControllerBase
 
     // POST: /api/Product   
     [HttpPost]
-    public async Task<ActionResult<product>> CreateProduct([FromForm] product product, IFormFile image)
+    public async Task<ActionResult<product>> CreateProduct([FromForm] product product, IFormFile? image)
     {
         _context.products.Add(product);
 
