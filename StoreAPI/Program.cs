@@ -43,6 +43,16 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy", builder =>
+    {
+        builder.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
+});
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -110,6 +120,7 @@ if (app.Environment.IsDevelopment())
     // });
 }
 
+//dev certs แทนน่าจะดีกว่าไป redirect ไปที่ https เฉพาะ prod
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
