@@ -103,5 +103,27 @@ async function updateProduct(id: number, payload: any) {
   }
 }
 
+//Delete Product
+async function deleteProduct(id: number) {
+  getToken()
+  try {
+    let url = `${process.env.NEXT_PUBLIC_BASE_URL_API}/product/${id}`
+    const response = await fetch(url, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+      },
+    })
+    if (response.ok) {
+      const data = await response.json()
+      console.log(data)
+      return { success: true }
+    } else {
+       throw new Error('Failed to delete product')
+    }
+  } catch (error) {
+    console.error('An error occurred while deleting product:', error)
+  }
+}
 
-export { getAllProducts, createProduct, updateProduct }
+export { getAllProducts, createProduct, updateProduct, deleteProduct }

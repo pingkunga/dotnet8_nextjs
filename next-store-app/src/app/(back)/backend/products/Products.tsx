@@ -36,7 +36,7 @@ import {
 import DashboardCard from "@/app/components/back/shared/DashboardCard";
 
 // Business Logic
-import { createProduct, getAllProducts, updateProduct } from "@/app/services/actions/productAction";
+import { createProduct, deleteProduct, getAllProducts, updateProduct } from "@/app/services/actions/productAction";
 import { IconEdit, IconEye, IconPlus, IconTrash, IconX } from "@tabler/icons-react";
 import { formatDate, formatDateToISOWithoutMilliseconds, numberWithCommas } from "@/app/utils/CommonUtil";
 
@@ -314,7 +314,37 @@ export default function ProductsPage({}: Props) {
 
 
   //=============================================================
+  // Delete Product
+  //=============================================================
 
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [selectedProductIdForDelete, setSelectedProductIdForDelete] = useState<number | null>(null);
+
+  const handleDeleteDialogOpen = (productId: number) => {
+    setSelectedProductIdForDelete(productId);
+    setDeleteDialogOpen(true);
+  }
+
+  const handleDeleteDialogClose = () => {
+    setDeleteDialogOpen(false);
+    setSelectedProductIdForDelete(null);
+  }
+
+  const handleDeleteProduct = async () => {
+    if (selectedProductIdForDelete) {
+      try {
+        // Call your API to delete the product
+        console.log("Deleting product with ID:", selectedProductIdForDelete)
+        const response = await deleteProduct(selectedProductIdForDelete)
+        console.log(response)
+        fetchProducts(page, limit) 
+        handleDeleteDialogClose() 
+      } catch (error) {
+        console.error("Failed to delete product:", error);
+      }
+    }
+  }
+  //=============================================================
   return (
     <>
       <Card
@@ -429,6 +459,7 @@ export default function ProductsPage({}: Props) {
                       variant="contained"
                       color="error"
                       sx={{ mr: 1, minWidth: "30px" }}
+                      onClick={() => handleDeleteDialogOpen(product.product_id)}
                     >
                       <IconTrash size={16} />
                     </Button>
@@ -767,6 +798,24 @@ export default function ProductsPage({}: Props) {
             </DialogActions>
           </form>
       </Dialog>
+
+      { /* Delete Dialog for Product */ }
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={handleDeleteDialogClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description" 
+      >
+        <DialogTitle id="alert-dialog-title">{"Delete Product"}</DialogTitle>
+        <DialogContent>
+          <Typography variant="body1">Are you sure you want to delete this product?</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteDialogClose} color="primary">Cancel</Button>
+          <Button onClick={handleDeleteProduct} color="error" autoFocus>Delete</Button>
+        </DialogActions>
+      </Dialog>
+
     </>
   );
 }
