@@ -118,7 +118,7 @@ export default function ProductsPage({}: Props) {
 
   useEffect(() => {
     fetchProducts(page, limit, searchCategory, searchQuery);
-  }, []);
+  }, [page, limit, searchCategory, searchQuery]);
 
   console.log(products);
 
