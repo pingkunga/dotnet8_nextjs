@@ -94,3 +94,7 @@ npm install react-hook-form@7.48.2
 npm install @hookform/resolvers@3.3.2
 npm install yup@1.3.2
 '''
+
+'''
+npm i jspdf-autotable@3.8.2
+'''
