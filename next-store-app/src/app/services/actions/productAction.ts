@@ -26,10 +26,11 @@ function getToken() {
 // ------------------------------
 
 // Get All Products
-async function getAllProducts() {
+async function getAllProducts(page: number, limit: number) {
     getToken()
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL_API}/product`, {
+      let url = `${process.env.NEXT_PUBLIC_BASE_URL_API}/product?page=${page}&limit=${limit}`
+      const response = await fetch(url, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -37,7 +38,9 @@ async function getAllProducts() {
         },
       })
       if (response.ok) {
-          return response.json()
+          const data = await response.json()
+          console.log(data)
+          return data
       } else {
          throw new Error('Failed to fetch products');
       }

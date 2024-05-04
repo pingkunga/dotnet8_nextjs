@@ -73,19 +73,28 @@ type ProductPost = {
 type Props = {};
 
 export default function ProductsPage({}: Props) {
+
+  const [page, setPage] = useState(0);
+  const [limit, setLimit] = useState(3);
+  const [totalCount, setTotalCount] = useState(0);
+
   const [products, setProducts] = useState([]);
 
-  const fetchProducts = async () => {
+  const fetchProducts = async (page: number, limit: number) => {
     try {
-      const response = await getAllProducts();
-      setProducts(response);
+      console.log(page);
+      console.log(limit);
+
+      const response = await getAllProducts(page+1, limit);
+      setTotalCount(response.totalRecords);
+      setProducts(response.products);
     } catch (error) {
       console.error("An error occurred while fetching products:", error);
     }
   };
 
   useEffect(() => {
-    fetchProducts();
+    fetchProducts(page, limit);
   }, []);
 
   console.log(products);
@@ -160,7 +169,7 @@ export default function ProductsPage({}: Props) {
     try {
       const response = await createProduct(formData)
       console.log(response)
-      fetchProducts() 
+      fetchProducts(page, limit) 
       handleDialogClose() 
     } catch (error) {
       console.error("Failed to create product:", error);

@@ -40,13 +40,13 @@ public class ProductController: ControllerBase
     // 1 pagination
     // 2 search
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<product>>> GetProducts([FromQuery] int page=1, [FromQuery] int pageSize=10
+    public async Task<ActionResult<IEnumerable<product>>> GetProducts([FromQuery] int page=1, [FromQuery] int limit=10
                                                                     , [FromQuery] int? searchCategory=null
                                                                     , [FromQuery] string searchQuery=null)
     {
         //return await _context.products.ToListAsync();
 
-        int skip = (page - 1) * pageSize;
+        int skip = (page - 1) * limit;
         //Join with categories
         var query = _context.products
             .Join(
@@ -84,7 +84,7 @@ public class ProductController: ControllerBase
         var products = await query
                         .OrderByDescending(p => p.product_id)
                         .Skip(skip)
-                        .Take(pageSize)
+                        .Take(limit)
                         .ToListAsync();
 
         int totalRecords = await _context.products.CountAsync();
