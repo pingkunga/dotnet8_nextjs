@@ -63,7 +63,6 @@ type ProductPost = {
   product_name: string
   unit_price: number
   unit_in_stock: number
-  product_picture: string
   created_date: string
   modified_date: string
 }
@@ -117,7 +116,6 @@ export default function ProductsPage({}: Props) {
       product_name: "",
       unit_price: 0,
       unit_in_stock: 0,
-      product_picture: "",
       created_date: new Date().toISOString(),
       modified_date: new Date().toISOString(),
     });
@@ -128,9 +126,8 @@ export default function ProductsPage({}: Props) {
   const productPostSchema: any = Yup.object().shape({
     category_id: Yup.string().required("Category is required"),
     product_name: Yup.string().required("Product Name is required"),
-    unit_price: Yup.number().required("Unit Price is required"),
-    unit_in_stock: Yup.number().required("Unit in Stock is required"),
-    product_picture: Yup.string().required("Product Picture is required"),
+    unit_price: Yup.number().required("Unit Price is required").moreThan(0, "Unit Price must be greater than 0"),
+    unit_in_stock: Yup.number().required("Unit in Stock is required").moreThan(0, "Unit in Stock must be greater than 0")
   });
 
   const { control, handleSubmit, formState: { errors }, reset, } = useForm<ProductPost>({
@@ -139,7 +136,6 @@ export default function ProductsPage({}: Props) {
       product_name: "",
       unit_price: 0,
       unit_in_stock: 0,
-      product_picture: "",
       created_date: formatDateToISOWithoutMilliseconds(new Date()),
       modified_date: formatDateToISOWithoutMilliseconds(new Date()),
     },
@@ -154,7 +150,6 @@ export default function ProductsPage({}: Props) {
     formData.append("product_name", data.product_name);
     formData.append("unit_price", data.unit_price.toString());
     formData.append("unit_in_stock", data.unit_in_stock.toString());
-    formData.append("product_picture", data.product_picture);
     formData.append("created_date", data.created_date);
     formData.append("modified_date", data.modified_date);
 
@@ -444,25 +439,6 @@ export default function ProductsPage({}: Props) {
                     variant="outlined"
                     error={errors.unit_in_stock ? true : false}
                     helperText={errors.unit_in_stock?.message}
-                  />
-                )}
-              />
-
-
-              <Controller 
-                name="product_picture"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    margin="dense"
-                    id="product_picture_name"
-                    label="Product Picture Name"
-                    type="text"
-                    fullWidth
-                    variant="outlined"
-                    error={errors.product_picture ? true : false}
-                    helperText={errors.product_picture?.message}
                   />
                 )}
               />
