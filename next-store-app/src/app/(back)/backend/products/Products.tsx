@@ -36,7 +36,7 @@ import {
 import DashboardCard from "@/app/components/back/shared/DashboardCard";
 
 // Business Logic
-import { createProduct, getAllProducts } from "@/app/services/actions/productAction";
+import { createProduct, getAllProducts, updateProduct } from "@/app/services/actions/productAction";
 import { IconEdit, IconEye, IconPlus, IconTrash, IconX } from "@tabler/icons-react";
 import { formatDate, formatDateToISOWithoutMilliseconds, numberWithCommas } from "@/app/utils/CommonUtil";
 
@@ -69,11 +69,11 @@ type ProductAdd = {
 }
 
 type ProductEdit = {
+  product_id: number
   category_id: string
   product_name: string
   unit_price: number
   unit_in_stock: number
-  created_date: string
   modified_date: string
 }
 
@@ -278,6 +278,38 @@ export default function ProductsPage({}: Props) {
   // Handle Submit Edit Produc
   const onSubmitEdit = async (data: ProductEdit) => {
     console.log(data)
+
+    // รับค่าเป็น FormData
+    const formData = new FormData()
+    // กำหนดค่าให้กับ FormData
+    formData.append("product_id", data.product_id.toString());
+    formData.append("product_name", data.product_name)
+    formData.append("unit_price", data.unit_price.toString())
+    formData.append("unit_in_stock", data.unit_in_stock.toString())
+    formData.append("category_id", data.category_id)
+    formData.append("modified_date", data.modified_date)
+
+    // Append image file to form data
+    if (fileInputRef.current.files[0]) {
+      formData.append("image", fileInputRef.current.files[0])
+    }
+    
+    // Display the key/value pairs
+    new Response(formData).text().then(console.log);
+    
+    // Call your API to submit the edited product
+    try {
+      if (!selectedProductForEdit) {
+        console.error("No product selected for edit")
+        return
+      }
+      const response = await updateProduct(selectedProductForEdit.product_id, formData)
+      console.log(response)
+      fetchProducts(page, limit) 
+      handleEditDialogClose() 
+    } catch (error) {
+      console.error("Failed to update product:", error);
+    }
   }
 
 
@@ -598,6 +630,23 @@ export default function ProductsPage({}: Props) {
               <img src={`${process.env.NEXT_PUBLIC_BASE_IMAGE_URL_API}/${selectedProductForEdit?.product_picture}`} alt={selectedProductForEdit?.product_name} style={{ width: '100%', marginBottom:'20px' }} />
 
               <Controller
+                name="product_id"
+                control={controlEdit}
+                defaultValue={selectedProductForEdit?.product_id || 0}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    margin="dense"
+                    label="Product ID"
+                    type="text"
+                    fullWidth
+                    variant="outlined"
+                    disabled
+                  />
+                )}
+              />
+
+              <Controller
                 name="product_name"
                 control={controlEdit}
                 defaultValue={selectedProductForEdit?.product_name || ''}
@@ -679,25 +728,37 @@ export default function ProductsPage({}: Props) {
                 </FormHelperText>
               </FormControl>
 
-              {/* File Input Edit Product*/}
-              {/* <input
-                type="file"
-                ref={editFileInputRef}
-                onChange={handleEditFileChange}
-                style={{ display: 'block', margin: '10px 0' }}
-              /> */}
+              { /* image choose and preview */}
+              <TextField
+                    variant="standard"          
+                    type="text"
+                    InputProps={{
+                      endAdornment: (
+                        <IconButton component="label">
+                          <FileUploadOutlined />
+                          <input
+                            accept="image/*"
+                            type="file"
+                            hidden
+                            onChange={handleFileChange}
+                            ref={fileInputRef}
+                          />
+                        </IconButton>
+                      ),
+                    value: imageFileName ? imageFileName : "",
+                    }}
+              />
 
-              {/* {editImagePreviewUrl && (
+              {imagePreviewUrl && (
                 <Box sx={{ mt: 2, mb: 2, textAlign: 'center' }}>
                   <Box sx={{ textAlign: 'right'}}>
-                    <Button onClick={removeEditImage} variant="outlined" style={{ display: 'inline-block'}}>
+                    <Button onClick={removeImage} variant="outlined" style={{ display: 'inline-block'}}>
                       <IconX size={16} />
                     </Button>
                   </Box>
-                  <img src={editImagePreviewUrl} alt="Preview" style={{ maxWidth: '100%', maxHeight: '300px', borderRadius: '10px' }} />
+                  <img src={imagePreviewUrl} alt="Preview" style={{ maxWidth: '100%', maxHeight: '300px', borderRadius: '10px' }} />
                 </Box>
-              )
-              } */}
+              )}
             </DialogContent>
 
             <DialogActions>

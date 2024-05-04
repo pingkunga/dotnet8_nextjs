@@ -1,5 +1,6 @@
 "use server"
 
+import { cp } from 'fs'
 import { cookies } from 'next/headers'
 
 // Variables for keeping the token
@@ -78,15 +79,17 @@ async function createProduct(payload: any) {
 }
 
 // Update Product
-async function updateProduct(id: string, payload: any) {
+async function updateProduct(id: number, payload: any) {
   getToken()
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL_API}/product/${id}`, {
+    let url = `${process.env.NEXT_PUBLIC_BASE_URL_API}/product/${id}`
+    console.log(url)
+    const response = await fetch(url, {
       method: 'PUT',
       headers: {
         'Authorization': `Bearer ${accessToken}`,
       },
-      body: JSON.stringify(payload),
+      body: payload,
     })
     if (response.ok) {
       const data = await response.json()
