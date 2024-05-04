@@ -29,6 +29,7 @@ import {
   Select,
   FormHelperText,
   IconButton,
+  TablePagination
 } from "@mui/material";
 
 // Custom Components
@@ -336,6 +337,22 @@ export default function ProductsPage({}: Props) {
               ))}
             </TableBody>
           </Table>
+          <TablePagination 
+            rowsPerPageOptions={[3, 5, 10]}
+            component="div"
+            count={totalCount}
+            rowsPerPage={limit}
+            page={page}
+            onPageChange={(e, newPage) => {
+              setPage(newPage);
+              fetchProducts(newPage, limit);
+            }}
+            onRowsPerPageChange={(e) => {
+              setLimit(parseInt(e.target.value, 10));
+              setPage(0);
+              fetchProducts(0, parseInt(e.target.value, 10));
+            }}
+          />
         </Box>
       </Card>
 
