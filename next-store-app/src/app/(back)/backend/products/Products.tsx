@@ -59,7 +59,7 @@ type Product = {
 };
 
 // Types for product post
-type ProductPost = {
+type ProductAdd = {
   category_id: string
   product_name: string
   unit_price: number
@@ -67,6 +67,16 @@ type ProductPost = {
   created_date: string
   modified_date: string
 }
+
+type ProductEdit = {
+  category_id: string
+  product_name: string
+  unit_price: number
+  unit_in_stock: number
+  created_date: string
+  modified_date: string
+}
+
 
 
 
@@ -150,7 +160,7 @@ export default function ProductsPage({}: Props) {
     unit_in_stock: Yup.number().required("Unit in Stock is required").moreThan(0, "Unit in Stock must be greater than 0")
   });
 
-  const { control, handleSubmit, formState: { errors }, reset, } = useForm<ProductPost>({
+  const { control, handleSubmit, formState: { errors }, reset, } = useForm<ProductAdd>({
     defaultValues: {
       category_id: "",
       product_name: "",
@@ -163,7 +173,7 @@ export default function ProductsPage({}: Props) {
   });
 
   //handle form submit
-  const onSubmitProduct = async (data: ProductPost) => {
+  const onSubmitProduct = async (data: ProductAdd) => {
     //console.log(data);
     const formData = new FormData();
     formData.append("category_id", data.category_id);
@@ -231,6 +241,47 @@ export default function ProductsPage({}: Props) {
       // Clear the file input value
       fileInputRef.current.value = ''
     }
+
+  //=============================================================
+  // Edit Product Dialog
+  //=============================================================
+  const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [selectedProductForEdit, setSelectedProductForEdit] = useState<Product | null>(null);
+
+  const handleEditDialogOpen = (product: Product) => {
+    resetEdit({
+      product_name: product.product_name,
+      unit_price: product.unit_price,
+      unit_in_stock: product.unit_in_stock,
+      category_id: product.category_id.toString(),
+      modified_date: formatDateToISOWithoutMilliseconds(new Date()),
+    })
+    setSelectedProductForEdit(product)
+    setOpenEditDialog(true);
+  }
+
+  const handleEditDialogClose = () => {
+    setOpenEditDialog(false);
+  }
+
+  // React Hook Form for editing product
+  const {
+    control: controlEdit,
+    handleSubmit: handleSubmitEdit,
+    formState: { errors: errorsEdit },
+    reset: resetEdit,
+  } = useForm<ProductEdit>({
+    resolver: yupResolver(productPostSchema) as any,
+  })
+  
+  
+  // Handle Submit Edit Produc
+  const onSubmitEdit = async (data: ProductEdit) => {
+    console.log(data)
+  }
+
+
+  //=============================================================
 
   return (
     <>
@@ -338,6 +389,7 @@ export default function ProductsPage({}: Props) {
                       variant="contained"
                       color="warning"
                       sx={{ mr: 1, minWidth: "30px" }}
+                      onClick={() => handleEditDialogOpen(product)}
                     >
                       <IconEdit size={16} />
                     </Button>
@@ -510,7 +562,7 @@ export default function ProductsPage({}: Props) {
         <Dialog open={openPreviewDialog} onClose={handlePreviewDialogClose}>
           <DialogTitle>Product Preview</DialogTitle>
           <DialogContent>
-              <Stack direction="row" spacing={2} minWidth={'500px'}>
+              <Stack direction="row" spacing={2}>
                 <img
                   src={`${process.env.NEXT_PUBLIC_BASE_IMAGE_URL_API}/${selectedProduct?.product_picture}`}
                   alt={selectedProduct?.product_name}
@@ -531,6 +583,129 @@ export default function ProductsPage({}: Props) {
           </DialogActions>
         </Dialog>
       }
+
+      { /* Edit Dialog for Product */ }
+      <Dialog open={openEditDialog} onClose={handleEditDialogClose}>
+        <DialogTitle sx={{mt:'20px'}}>Edit Product</DialogTitle>
+          <form 
+            onSubmit={handleSubmitEdit(onSubmitEdit)}
+            noValidate
+            autoComplete="off"
+          >
+            <DialogContent sx={{width: '400px'}}>
+
+              {/* Preview Old Image */}
+              <img src={`${process.env.NEXT_PUBLIC_BASE_IMAGE_URL_API}/${selectedProductForEdit?.product_picture}`} alt={selectedProductForEdit?.product_name} style={{ width: '100%', marginBottom:'20px' }} />
+
+              <Controller
+                name="product_name"
+                control={controlEdit}
+                defaultValue={selectedProductForEdit?.product_name || ''}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    autoFocus
+                    margin="dense"
+                    label="Product Name"
+                    type="text"
+                    fullWidth
+                    variant="outlined"
+                    error={errorsEdit.product_name ? true : false}
+                    helperText={errorsEdit.product_name?.message}
+                  />
+                )}
+              />
+
+              <Controller
+                name="unit_price"
+                control={controlEdit}
+                defaultValue={selectedProductForEdit?.unit_price || 0}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    margin="dense"
+                    label="Unit Price"
+                    type="number"
+                    fullWidth
+                    variant="outlined"
+                    error={errorsEdit.unit_price ? true : false}
+                    helperText={errorsEdit.unit_price?.message}
+                  />
+                )}
+              />
+
+              <Controller
+                name="unit_in_stock"
+                control={controlEdit}
+                defaultValue={selectedProductForEdit?.unit_in_stock || 0}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    margin="dense"
+                    label="Unit in Stock"
+                    type="number"
+                    fullWidth
+                    variant="outlined"
+                    error={errorsEdit.unit_in_stock ? true : false}
+                    helperText={errorsEdit.unit_in_stock?.message}
+                  />
+                )}
+              />
+
+              <FormControl fullWidth variant="outlined" margin="dense">
+                <InputLabel id="category_name-label">Category</InputLabel>
+                <Controller
+                  name="category_id"
+                  control={controlEdit}
+                  render={({ field: { onChange, value }, fieldState: { error } }) => (
+                    <Select
+                      labelId="category_name-label"
+                      id="category_id"
+                      label="Category"
+                      value={value}
+                      onChange={onChange} // Use field.onChange for change handler
+                      error={!!error} // Use fieldState.error to determine if there's an error
+                    >
+                      {categories.map((category) => (
+                        <MenuItem key={category.value} value={category.value}>
+                          {category.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  )}
+                />
+                <FormHelperText error={errorsEdit.category_id ? true : false}>
+                  {errorsEdit.category_id?.message}
+                </FormHelperText>
+              </FormControl>
+
+              {/* File Input Edit Product*/}
+              {/* <input
+                type="file"
+                ref={editFileInputRef}
+                onChange={handleEditFileChange}
+                style={{ display: 'block', margin: '10px 0' }}
+              /> */}
+
+              {/* {editImagePreviewUrl && (
+                <Box sx={{ mt: 2, mb: 2, textAlign: 'center' }}>
+                  <Box sx={{ textAlign: 'right'}}>
+                    <Button onClick={removeEditImage} variant="outlined" style={{ display: 'inline-block'}}>
+                      <IconX size={16} />
+                    </Button>
+                  </Box>
+                  <img src={editImagePreviewUrl} alt="Preview" style={{ maxWidth: '100%', maxHeight: '300px', borderRadius: '10px' }} />
+                </Box>
+              )
+              } */}
+            </DialogContent>
+
+            <DialogActions>
+              <Button onClick={handleEditDialogClose}>Cancel</Button>
+              <Button type="submit" variant="contained">Update</Button>
+            </DialogActions>
+          </form>
+      </Dialog>
     </>
   );
 }

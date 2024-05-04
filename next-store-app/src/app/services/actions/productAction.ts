@@ -77,4 +77,28 @@ async function createProduct(payload: any) {
   }
 }
 
-export { getAllProducts, createProduct }
+// Update Product
+async function updateProduct(id: string, payload: any) {
+  getToken()
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL_API}/product/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify(payload),
+    })
+    if (response.ok) {
+      const data = await response.json()
+      console.log(data)
+      return { success: true }
+    } else {
+       throw new Error('Failed to update product')
+    }
+  } catch (error) {
+    console.error('An error occurred while updating product:', error)
+  }
+}
+
+
+export { getAllProducts, createProduct, updateProduct }
