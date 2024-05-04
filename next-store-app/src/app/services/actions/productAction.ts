@@ -1,6 +1,5 @@
 "use server"
 
-import { cp } from 'fs'
 import { cookies } from 'next/headers'
 
 // Variables for keeping the token
@@ -27,10 +26,18 @@ function getToken() {
 // ------------------------------
 
 // Get All Products
-async function getAllProducts(page: number, limit: number) {
+async function getAllProducts(page: number, limit: number, searchCategory: string, searchQuery: string) {
     getToken()
     try {
       let url = `${process.env.NEXT_PUBLIC_BASE_URL_API}/product?page=${page}&limit=${limit}`
+
+      if (searchCategory) {
+        url += `&searchCategory=${searchCategory}`
+      }
+
+      if (searchQuery) {
+        url += `&searchQuery=${searchQuery}`
+      }
       const response = await fetch(url, {
         method: 'GET',
         headers: {

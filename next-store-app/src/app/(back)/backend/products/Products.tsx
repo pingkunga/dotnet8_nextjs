@@ -37,7 +37,7 @@ import DashboardCard from "@/app/components/back/shared/DashboardCard";
 
 // Business Logic
 import { createProduct, deleteProduct, getAllProducts, updateProduct } from "@/app/services/actions/productAction";
-import { IconEdit, IconEye, IconPlus, IconTrash, IconX } from "@tabler/icons-react";
+import { IconClearAll, IconEdit, IconEye, IconPlus, IconTrash, IconX } from "@tabler/icons-react";
 import { formatDate, formatDateToISOWithoutMilliseconds, numberWithCommas } from "@/app/utils/CommonUtil";
 
 // React Hook Form and Yup for Form Validation
@@ -85,18 +85,30 @@ type Props = {};
 
 export default function ProductsPage({}: Props) {
 
+  //=============================================================
+  // Search
+  const [searchCategory, setSearchCategory] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearchQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
+
+  //=============================================================
+  // Pagination
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(3);
   const [totalCount, setTotalCount] = useState(0);
 
+  // Fetch Products
   const [products, setProducts] = useState([]);
 
-  const fetchProducts = async (page: number, limit: number) => {
+  const fetchProducts = async (page: number, limit: number, searchCategory: string, searchQuery: string) => {
     try {
       console.log(page);
       console.log(limit);
 
-      const response = await getAllProducts(page+1, limit);
+      const response = await getAllProducts(page+1, limit, searchCategory, searchQuery);
       setTotalCount(response.totalRecords);
       setProducts(response.products);
     } catch (error) {
@@ -105,7 +117,7 @@ export default function ProductsPage({}: Props) {
   };
 
   useEffect(() => {
-    fetchProducts(page, limit);
+    fetchProducts(page, limit, searchCategory, searchQuery);
   }, []);
 
   console.log(products);
@@ -195,7 +207,7 @@ export default function ProductsPage({}: Props) {
     try {
       const response = await createProduct(formData)
       console.log(response)
-      fetchProducts(page, limit) 
+      fetchProducts(page, limit, searchCategory, searchQuery) 
       handleAddDialogClose() 
     } catch (error) {
       console.error("Failed to create product:", error);
@@ -305,7 +317,7 @@ export default function ProductsPage({}: Props) {
       }
       const response = await updateProduct(selectedProductForEdit.product_id, formData)
       console.log(response)
-      fetchProducts(page, limit) 
+      fetchProducts(page, limit, searchCategory, searchQuery) 
       handleEditDialogClose() 
     } catch (error) {
       console.error("Failed to update product:", error);
@@ -337,7 +349,7 @@ export default function ProductsPage({}: Props) {
         console.log("Deleting product with ID:", selectedProductIdForDelete)
         const response = await deleteProduct(selectedProductIdForDelete)
         console.log(response)
-        fetchProducts(page, limit) 
+        fetchProducts(page, limit, searchCategory, searchQuery) 
         handleDeleteDialogClose() 
       } catch (error) {
         console.error("Failed to delete product:", error);
@@ -364,6 +376,51 @@ export default function ProductsPage({}: Props) {
             </Button>
           </Stack>
         </CardContent>
+
+        <Stack
+            direction="row"
+            m={2}
+            justifyContent="space-between"
+            alignItems={"center"}
+          >
+            <FormControl fullWidth>
+              <InputLabel id="category-select-label">Category</InputLabel>
+              <Select
+                labelId="category-select-label"
+                value={searchCategory}
+                label="Category"
+                onChange={(e) => setSearchCategory(e.target.value)}
+              >
+                {categories.map((category) => (
+                  <MenuItem key={category.value} value={category.value}>
+                    {category.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            <TextField
+              fullWidth
+              label="Search Products"
+              variant="outlined"
+              value={searchQuery}
+              onChange={handleSearchQueryChange}
+              sx={{ marginLeft: 2 }}
+            />
+            <Box>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => {
+                    setSearchQuery('');
+                    setSearchCategory('');
+                  }}
+                  sx={{ marginLeft: 2, height: '50px' }}
+                >
+                  <IconClearAll size={16} /> &nbsp;Clear
+                </Button>
+            </Box>
+        </Stack>
         <Box sx={{ overflow: "auto", width: { sm: "auto" } }}>
           <Table
             aria-label="products"
@@ -476,12 +533,12 @@ export default function ProductsPage({}: Props) {
             page={page}
             onPageChange={(e, newPage) => {
               setPage(newPage);
-              fetchProducts(newPage, limit);
+              fetchProducts(newPage, limit, searchCategory, searchQuery);
             }}
             onRowsPerPageChange={(e) => {
               setLimit(parseInt(e.target.value, 10));
               setPage(0);
-              fetchProducts(0, parseInt(e.target.value, 10));
+              fetchProducts(0, parseInt(e.target.value, 10), searchCategory, searchQuery);
             }}
           />
         </Box>
