@@ -48,6 +48,7 @@ import { FileUploadOutlined } from "@mui/icons-material";
 
 type Product = {
   product_id: number;
+  category_id: number;
   category_name: string;
   product_name: string;
   unit_price: number;
@@ -99,14 +100,33 @@ export default function ProductsPage({}: Props) {
 
   console.log(products);
 
-  const [openDialog, setOpenDialog] = useState(false);
-  
-  const handleDialogOpen = () => {
-    setOpenDialog(true);
+  //=============================================================
+  // Preview Product Dialog
+  //=============================================================
+
+  const [openPreviewDialog, setOpenPreviewDialog] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
+  const handlePreviewDialogOpen = (product: Product) => {
+    setSelectedProduct(product);
+    setOpenPreviewDialog(true);
   }
 
-  const handleDialogClose = () => {
-    setOpenDialog(false);
+  const handlePreviewDialogClose = () => {
+    setOpenPreviewDialog(false);
+  }
+
+  //=============================================================
+  // Add Product Dialog
+  //=============================================================
+  const [openAddDialog, setOpenAddDialog] = useState(false);
+  
+  const handleAddDialogOpen = () => {
+    setOpenAddDialog(true);
+  }
+
+  const handleAddDialogClose = () => {
+    setOpenAddDialog(false);
     setImagePreviewUrl('') // Clear the image preview
     setImageFileName('') // Clear the image file name
     
@@ -166,7 +186,7 @@ export default function ProductsPage({}: Props) {
       const response = await createProduct(formData)
       console.log(response)
       fetchProducts(page, limit) 
-      handleDialogClose() 
+      handleAddDialogClose() 
     } catch (error) {
       console.error("Failed to create product:", error);
     }
@@ -226,7 +246,7 @@ export default function ProductsPage({}: Props) {
             alignItems={"center"}
           >
             <Typography variant="h5">Products</Typography>
-            <Button variant="contained" color="primary" onClick={handleDialogOpen}>
+            <Button variant="contained" color="primary" onClick={handleAddDialogOpen}>
               <IconPlus size={16} /> &nbsp;Add Product
             </Button>
           </Stack>
@@ -310,6 +330,7 @@ export default function ProductsPage({}: Props) {
                       variant="contained"
                       color="info"
                       sx={{ mr: 1, minWidth: "30px" }}
+                      onClick={() => handlePreviewDialogOpen(product)}
                     >
                       <IconEye size={16} />
                     </Button>
@@ -353,7 +374,7 @@ export default function ProductsPage({}: Props) {
 
       { /* Add Dialog for Add Product */ }
       <Dialog
-        open={openDialog}
+        open={openAddDialog}
         aria-labelledby="form-dialog-title">
           <form noValidate 
                 onSubmit={handleSubmit(onSubmitProduct)}  
@@ -477,11 +498,39 @@ export default function ProductsPage({}: Props) {
 
             </DialogContent>
             <DialogActions>
-              <Button onClick={handleDialogClose} color="primary">Cancel</Button>
+              <Button onClick={handleAddDialogClose} color="primary">Cancel</Button>
               <Button type="submit" color="primary">Save</Button>
             </DialogActions>
           </form>
       </Dialog>
+
+      { /* Preview Dialog for Product */ }
+      {
+      selectedProduct && 
+        <Dialog open={openPreviewDialog} onClose={handlePreviewDialogClose}>
+          <DialogTitle>Product Preview</DialogTitle>
+          <DialogContent>
+              <Stack direction="row" spacing={2} minWidth={'500px'}>
+                <img
+                  src={`${process.env.NEXT_PUBLIC_BASE_IMAGE_URL_API}/${selectedProduct?.product_picture}`}
+                  alt={selectedProduct?.product_name}
+                  style={{ width: "60%" }}
+                />
+                <Box>
+                  <Typography variant="h6">{selectedProduct?.product_name}</Typography>
+                  <Typography variant="body1">{selectedProduct?.category_name}</Typography>
+                  <Typography variant="body1">Price: {(selectedProduct?.unit_price != undefined) && numberWithCommas(selectedProduct.unit_price)}</Typography>
+                  <Typography variant="body1">Unit in Stock: {selectedProduct?.unit_in_stock}</Typography>
+                  <Typography variant="body1">Created: { (selectedProduct?.created_date != undefined) && formatDate(selectedProduct.created_date)}</Typography>
+                  <Typography variant="body1">Modified: { (selectedProduct?.modified_date != undefined) && formatDate(selectedProduct.modified_date)}</Typography>
+                </Box>
+              </Stack>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handlePreviewDialogClose} color="primary">Close</Button>
+          </DialogActions>
+        </Dialog>
+      }
     </>
   );
 }
